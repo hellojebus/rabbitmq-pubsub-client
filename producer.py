@@ -3,6 +3,7 @@
 import pika
 import ssl
 import os
+import random
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -13,6 +14,7 @@ RABBIT_PWD = os.getenv("RABBIT_PWD")
 EXCHANGE_NAME = os.getenv("EXCHANGE_NAME")
 QUEUE_NAME = os.getenv("QUEUE_NAME")
 
+RANDOM_INT = random.randint(1,1000)
 credentials = pika.PlainCredentials(RABBIT_USER, RABBIT_PWD)
 
 context = ssl.SSLContext(ssl.PROTOCOL_TLSv1)
@@ -27,10 +29,10 @@ parameters = pika.ConnectionParameters(
 
 connection = pika.BlockingConnection(parameters)
 channel = connection.channel()
-channel.queue_declare(QUEUE_NAME)
-channel.basic_publish(exchange=QUEUE_NAME,
+channel.queue_declare(queue=QUEUE_NAME, durable=True)
+channel.basic_publish(exchange=EXCHANGE_NAME,
                       routing_key="",
-                      body='Hello World #3!')
+                      body='Hello World {}!'.format(RANDOM_INT))
 
-print(" [x] Sent 'Hello World #3!'")
+print(" [x] Sent 'Hello World {}!'".format(RANDOM_INT))
 connection.close()
