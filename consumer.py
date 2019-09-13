@@ -30,7 +30,7 @@ channel = connection.channel()
 channel.queue_declare(queue=QUEUE_NAME, durable=True)
 
 def callback(ch, method, properties, body):
-    print(" [x] Received %r" % body)
+    print(" [x] Received {}}".format(body))
 
 channel.basic_consume(queue=QUEUE_NAME,
                       auto_ack=True,
